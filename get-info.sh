@@ -7,4 +7,6 @@ if iwconfig "${INTERFACE}" | grep -q "ESSID:off/any"; then
 	exit 1
 fi
 
+ip a
+
 nmap -p- -T4 $(ip a | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1') -v
