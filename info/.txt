@@ -1,0 +1,40 @@
+Starting Nmap 7.93 ( https://nmap.org ) at 2025-06-04 22:09 CEST
+Initiating Ping Scan at 22:09
+Scanning 192.168.16.2 [2 ports]
+Completed Ping Scan at 22:09, 0.00s elapsed (1 total hosts)
+Initiating Parallel DNS resolution of 1 host. at 22:09
+Completed Parallel DNS resolution of 1 host. at 22:09, 0.01s elapsed
+Initiating Connect Scan at 22:09
+Scanning 192.168.16.2 [65535 ports]
+Discovered open port 22/tcp on 192.168.16.2
+Stats: 0:00:01 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 14.91% done; ETC: 22:10 (0:00:06 remaining)
+Stats: 0:00:01 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 20.94% done; ETC: 22:09 (0:00:04 remaining)
+Stats: 0:00:02 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 29.18% done; ETC: 22:10 (0:00:05 remaining)
+Stats: 0:00:02 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 37.19% done; ETC: 22:09 (0:00:03 remaining)
+Stats: 0:00:03 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 45.35% done; ETC: 22:10 (0:00:04 remaining)
+Stats: 0:00:03 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 53.36% done; ETC: 22:09 (0:00:03 remaining)
+Stats: 0:00:04 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 60.99% done; ETC: 22:10 (0:00:03 remaining)
+Stats: 0:00:04 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 70.30% done; ETC: 22:09 (0:00:02 remaining)
+Stats: 0:00:05 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 77.78% done; ETC: 22:09 (0:00:01 remaining)
+Stats: 0:00:05 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 85.40% done; ETC: 22:09 (0:00:01 remaining)
+Stats: 0:00:06 elapsed; 0 hosts completed (1 up), 1 undergoing Connect Scan
+Connect Scan Timing: About 93.34% done; ETC: 22:09 (0:00:00 remaining)
+Completed Connect Scan at 22:09, 6.33s elapsed (65535 total ports)
+Nmap scan report for 192.168.16.2
+Host is up (0.00043s latency).
+Not shown: 65534 closed tcp ports (conn-refused)
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Read data files from: /usr/bin/../share/nmap
+Nmap done: 1 IP address (1 host up) scanned in 6.71 seconds
