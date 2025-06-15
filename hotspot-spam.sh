@@ -1,5 +1,13 @@
 #!/bin/bash
 
+mode=$(iwconfig "${INTERFACE}" | grep "Mode:" | awk '{print $4}')
+
+if [ ${mode} = "Mode:Managed" ]; then
+        sudo ifconfig ${INTERFACE} down
+        sudo iwconfig ${INTERFACE} mode monitor
+        sudo ifconfig ${INTERFACE} up
+fi
+
 read -p "ssid?: " ssid
 read -p "count?: " count
 
