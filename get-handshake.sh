@@ -12,6 +12,8 @@ read -p "bssid?: " bssid
 
 read -p "channel?: " channel
 
+rm -f "$HOME/captured/cap.cap-01.cap"
+
 sudo iwconfig "$INTERFACE" channel "$channel"
 
 sudo airodump-ng --bssid "$bssid" -c "$channel" -w "$HOME/captured/cap.cap" "$INTERFACE"
