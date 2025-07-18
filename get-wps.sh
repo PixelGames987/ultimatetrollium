@@ -7,6 +7,8 @@ if [ "${mode}" = "Mode:Managed" ]; then
     sudo ifconfig "${INTERFACE}" up
 fi
 
+sleep 3
+
 echo -e "Press ctrl+c when scanning finishes\n"
 sudo wash -i "$INTERFACE"
 
