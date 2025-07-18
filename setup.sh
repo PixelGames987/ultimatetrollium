@@ -4,17 +4,27 @@
 
 set -e
 
-echo "[*] Updating package list..."
+echo -e "\n[*] Updating package list...\n"
 sudo apt update
 
-echo "[*] Full system update..."
+echo -e "\n[*] Full system update...\n"
 sudo apt full-upgrade -y
 
-echo "[*] Installing WiFi/Bluetooth attack tools and dependencies..."
+echo -e "\n[*] Installing WiFi/Bluetooth attack tools and dependencies...\n"
 sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 -y
 
-echo "[*] Building the carwhisperer exploit..."
+echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$(dirname "$0")/carwhisperer"
 make
 
-echo "[*] All dependencies installed and carwhisperer built."
+echo -e "\n[*] All dependencies installed and carwhisperer built.\n"
+
+read -p "Which wlan device will you be using? (eg. wlan1): " interface
+read -p "Which hci device will you be using? (eg. hci0): " bt_interface
+
+echo -e "export INTERFACE=${interface}" >> ~/.bashrc
+echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
+
+source ~/.bashrc
+
+echo -e "[*] Setup completed, scripts ready for use."
