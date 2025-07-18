@@ -3,9 +3,13 @@ A collection of simple bash scripts for the raspberry pi made to simplify runnin
 
 Note: the carwhisperer exploit was not made by me. Source: https://trifinite.org/stuff/carwhisperer/
 
-Some scripts rely on environment variables, you can run these commands to set them:
+How to setup?
 ```
-export INTERFACE=wlan1
-export INTERFACE_BT=hci0
+sudo apt update
+sudo apt install git -y
+
+git clone https://github.com/PixelGames987/ultimatetrollium/
+cd ultimatetrollium
+
+./setup.sh
 ```
-or put them in `.bashrc`.
