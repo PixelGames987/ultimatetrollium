@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mode=$(iwconfig "${INTERFACE}" | grep "Mode:" | awk '{print $4}')
+mode=$(iwconfig "${INTERFACE}" | grep "Mode:" | awk '{print $1}')
 
 if [ ${mode} = "Mode:Managed" ]; then
         sudo ifconfig ${INTERFACE} down
