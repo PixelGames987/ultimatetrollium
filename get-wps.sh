@@ -1,10 +1,11 @@
 #!/bin/bash
 
-mode=$(iwconfig "${INTERFACE}" | grep "Mode:" | awk '{print $1}')
+mode=$(iwconfig "${INTERFACE}" | grep -o "Mode:Managed")
+
 if [ "${mode}" = "Mode:Managed" ]; then
-    sudo ifconfig "${INTERFACE}" down
-    sudo iwconfig "${INTERFACE}" mode monitor
-    sudo ifconfig "${INTERFACE}" up
+        sudo ifconfig ${INTERFACE} down
+        sudo iwconfig ${INTERFACE} mode monitor
+        sudo ifconfig ${INTERFACE} up
 fi
 
 sleep 3
