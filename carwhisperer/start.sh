@@ -19,7 +19,7 @@ elif [ ${scan_mode} = "2" ]; then
 
 elif [ ${scan_mode} = "3" ]; then
 	sudo stdbuf -oL hcitool -i "$INTERFACE_BT" scan
-        timeout 10 sudo stdbuf -oL hcitool -i "$INTERFACE_BT"
+        timeout 10 sudo stdbuf -oL hcitool -i "$INTERFACE_BT" lescan
 else
 	echo "Enter a valid mode"
 	exit 1
@@ -30,7 +30,7 @@ read -p "bssid?: " bssid
 
 rm -f "$output_raw"
 
-$exec_path hci0 "$message_file" "$output_raw" "$bssid"
+./$exec_path hci0 "$message_file" "$output_raw" "$bssid"
 
 sudo sox -t raw -r 8000 -c 1 -e signed-integer -b 16 --endian little "$output_raw" "$output_wav"
 
