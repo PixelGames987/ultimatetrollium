@@ -27,6 +27,14 @@ sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
 
 echo -e "\n[*] All dependencies installed and carwhisperer built.\n"
 
+# This makes the connection between the raspberry pi and a phone more stable
+echo -e "\n[*] Disabling wlan0 power management...\n"
+
+cat <<EOF | sudo tee "/etc/NetworkManager/conf.d/disable-wifi-powersave.conf" > /dev/null 
+[connection]
+wifi.powersave = 2
+EOF
+
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
 
@@ -35,4 +43,7 @@ echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
 
 source ~/.bashrc
 
-echo -e "[*] Setup completed, scripts ready for use."
+echo -e "\n[*] Restarting NetowkrManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
+sudo systemctl restart NetworkManager
+
+echo "[*] Setup completed, scripts ready for use."
