@@ -11,7 +11,7 @@ fi
 read -p "ssid?: " ssid
 read -p "count?: " count
 
-AP_FILE="/home/pi/aps.txt"
+AP_FILE="/tmp/aps.txt"
 
 rm -f "$AP_FILE"
 
