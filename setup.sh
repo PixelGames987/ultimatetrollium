@@ -16,6 +16,7 @@ sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng net
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$(dirname "$0")/carwhisperer"
 make
+mkdir "$(dirname "$0")/carwhisperer/output"
 
 echo -e "\n[*] Installing tailscale...\n"
 curl -fsSL https://tailscale.com/install.sh | sh
