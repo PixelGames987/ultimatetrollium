@@ -12,7 +12,7 @@ fi
 
 read -p "ssid?: " ssid
 
-read -s -p "password?: " password
+read -s -p "password? (leave blank for open networks): " password
 echo
 
 if [ -z "${password}" ]; then
