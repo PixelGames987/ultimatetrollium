@@ -36,6 +36,15 @@ cat <<EOF | sudo tee "/etc/NetworkManager/conf.d/disable-wifi-powersave.conf" > 
 wifi.powersave = 2
 EOF
 
+
+echo -e "\n[*] Installing kismet...\n"
+
+wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
+echo "deb https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/kismet.list
+sudo apt update
+sudo apt install kismet -y
+sudo systemctl disable kismet
+
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
 
@@ -43,6 +52,8 @@ echo -e "export INTERFACE=${interface}" >> ~/.bashrc
 echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
 
 source ~/.bashrc
+
+sudo sh -c "echo \"source=${INTERFACE}\" >> /etc/kismet/kismet.conf"
 
 echo -e "\n[*] Restarting NetowkrManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
 sudo systemctl restart NetworkManager
