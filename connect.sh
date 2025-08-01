@@ -19,6 +19,7 @@ if [ -z "${password}" ]; then
     sudo nmcli dev wifi connect "${ssid}" ifname "${INTERFACE}"
 else
     sudo nmcli dev wifi connect "${ssid}" password "${password}" ifname "${INTERFACE}"
+fi
 
 if [ $? -eq 0 ]; then
   echo "Successfully connected to $ssid."
