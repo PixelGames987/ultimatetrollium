@@ -4,3 +4,4 @@ carwhisperer/carwhisperer
 carwhisperer/output
 carwhisperer/output/*
 nohup.out
+.scripts/wifijammer/.venv

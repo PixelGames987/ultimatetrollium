@@ -16,7 +16,8 @@ sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng net
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$(dirname "$0")/carwhisperer"
 make
-mkdir "$(dirname "$0")/carwhisperer/output"
+cd ..
+mkdir -p "$(dirname "$0")/carwhisperer/output"
 
 echo -e "\n[*] Installing tailscale...\n"
 curl -fsSL https://tailscale.com/install.sh | sh
@@ -35,6 +36,11 @@ cat <<EOF | sudo tee "/etc/NetworkManager/conf.d/disable-wifi-powersave.conf" > 
 [connection]
 wifi.powersave = 2
 EOF
+
+echo -e "\n[*] Setting up wifijammer.py\n"
+python -m venv .scripts/wifijammer/.venv
+.scripts/wifijammer/.venv/bin/python -m pip install scapy
+echo -e "\n[*] wifijammer.py ready to use\n"
 
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
