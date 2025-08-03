@@ -3,3 +3,6 @@ carwhisperer/out*
 carwhisperer/carwhisperer
 carwhisperer/output
 carwhisperer/output/*
+nohup.out
+.scripts/wifijammer/.venv
+.scripts/wifijammer/__pycache__

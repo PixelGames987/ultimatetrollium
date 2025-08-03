@@ -1,7 +1,9 @@
 # ultimatetrollium
 A collection of simple bash scripts for the raspberry pi made to simplify running wifi/bluetooth attacks using ssh.
 
-Note: the carwhisperer exploit was not made by me. Source: https://trifinite.org/stuff/carwhisperer/
+Note: Some scripts were not made by me. 
+Carwhisperer: https://trifinite.org/stuff/carwhisperer
+wifijammer: https://github.com/hash3liZer/wifijammer
 
 How to setup?
 ```
