@@ -39,14 +39,22 @@ EOF
 
 echo -e "\n[*] Setting up wifijammer.py\n"
 python -m venv .scripts/wifijammer/.venv
-.scripts/wifijammer/.venv/bin/python -m pip install scapy
+.scripts/wifijammer/.venv/bin/python -m pip install scapy==2.4.3
+
+cd /usr/lib/aarch64-linux-gnu
+sudo ln -s -f libc.a liblibc.a
+cd -
+
 echo -e "\n[*] wifijammer.py ready to use\n"
 
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
+sudo iwconfig
+read -p "Copy and paste your hotspot's mac address/bssid: " mac
 
 echo -e "export INTERFACE=${interface}" >> ~/.bashrc
 echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
+echo -e "export MAC=\"${mac}\"" >> ~/.bashrc
 
 source ~/.bashrc
 
