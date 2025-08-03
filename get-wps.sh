@@ -10,12 +10,18 @@ fi
 
 sleep 3
 
-echo -e "Press ctrl+c when scanning finishes\n"
-sudo wash -i "$INTERFACE"
+read -p "use 5ghz? (y/n): " ghz
+echo -e "Press ctrl+c to stop the scan\n"
+
+if [[ "${ghz}" == "y" ]]; then
+	sudo wash -i "$INTERFACE" -5
+else
+	sudo wash -i "$INTERFACE" -2
+fi
 
 read -p "bssid?: " bssid
 read -p "channel?: " channel
-read -p "use 5ghz? (y/n): " ghz
+
 if [ "$ghz" = "n" ]; then
     sudo reaver -i "$INTERFACE" -b "$bssid" -c "$channel" -vv
 elif [ "$ghz" = "y" ]; then
