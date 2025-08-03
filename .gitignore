@@ -4,3 +4,6 @@ carwhisperer/carwhisperer
 carwhisperer/output
 carwhisperer/output/*
 Kismet-*
+nohup.out
+.scripts/wifijammer/.venv
+.scripts/wifijammer/__pycache__
