@@ -69,7 +69,7 @@ source ~/.bashrc
 
 sudo sh -c "echo \"source=${INTERFACE}\" >> /etc/kismet/kismet.conf"
 
-echo -e "\n[*] Restarting NetowkrManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
+echo -e "\n[*] Restarting NetworkManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
 sudo systemctl restart NetworkManager
 
 echo "[*] Setup completed, scripts ready for use."
