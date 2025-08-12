@@ -19,13 +19,17 @@ make
 cd ..
 mkdir -p "$(dirname "$0")/carwhisperer/output"
 
-echo -e "\n[*] Installing tailscale...\n"
-curl -fsSL https://tailscale.com/install.sh | sh
-sudo systemctl enable tailscaled
-sudo systemctl start tailscaled
-echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+read -p "Do you want to install tailscale? (Y/n): " tailscale
+if [ "${tailscale^^}" != "N" ]; then
+	echo -e "\n[*] Installing tailscale...\n"
+	curl -fsSL https://tailscale.com/install.sh | sh
+	sudo systemctl enable tailscaled
+	sudo systemctl start tailscaled
+	echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+	echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
+	sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
+	echo -e "\n[*] Tailscale installed\n"
+fi
 
 echo -e "\n[*] All dependencies installed and carwhisperer built.\n"
 
@@ -69,7 +73,7 @@ source ~/.bashrc
 
 sudo sh -c "echo \"source=${INTERFACE}\" >> /etc/kismet/kismet.conf"
 
-echo -e "\n[*] Restarting NetowkrManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
+echo -e "\n[*] Restarting NetworkManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
 sudo systemctl restart NetworkManager
 
 echo "[*] Setup completed, scripts ready for use."
