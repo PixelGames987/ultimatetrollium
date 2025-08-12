@@ -2,7 +2,9 @@
 A collection of simple bash scripts for the raspberry pi made to simplify running wifi/bluetooth attacks using ssh.
 
 Note: Some scripts were not made by me. 
+
 Carwhisperer: https://trifinite.org/stuff/carwhisperer
+
 wifijammer: https://github.com/hash3liZer/wifijammer
 
 How to setup?
@@ -14,4 +16,13 @@ git clone https://github.com/PixelGames987/ultimatetrollium/
 cd ultimatetrollium
 
 ./setup.sh
+```
+
+The setup script installs:
+```
+build-essential, bluez, libbluetooth-dev, sox, nmap, aircrack-ng, network-manager, reaver, bluez, mdk3
+carwhisperer
+tailscale (optional)
+kismet
+wifijammer
 ```
