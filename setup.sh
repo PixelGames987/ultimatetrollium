@@ -63,7 +63,7 @@ echo -e "\n[*] wifijammer.py ready to use\n"
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
 sudo iwconfig
-read -p "Copy and paste your hotspot's mac address/bssid: " mac
+read -p "Copy and paste your hotspot's mac address/bssid (to not be targeted by the wifi deauther): " mac
 
 echo -e "export INTERFACE=${interface}" >> ~/.bashrc
 echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
