@@ -31,10 +31,9 @@ if [ "$attack" = "1" ]; then
 	fi
 
 elif [ "$attack" = "2" ]; then
-	if [ "${mode}" = "Mode:Monitor" ]; then
-        	sudo ifconfig ${INTERFACE} down
-	        sudo iwconfig ${INTERFACE} mode managed # OneShot needs the adapter to be in managed
-        	sudo ifconfig ${INTERFACE} up
+       	sudo ifconfig ${INTERFACE} down
+        sudo iwconfig ${INTERFACE} mode managed # OneShot needs the adapter to be in managed
+       	sudo ifconfig ${INTERFACE} up
 	fi
 
 	sudo python .scripts/ose/ose.py -i wlan1 -K -F -w
