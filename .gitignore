@@ -7,3 +7,6 @@ Kismet-*
 nohup.out
 .scripts/wifijammer/.venv
 .scripts/wifijammer/__pycache__
+.scripts/ose/src/__pycache__
+.scripts/ose/src/wifi/__pycache__
+.scripts/ose/src/wps/__pycache__

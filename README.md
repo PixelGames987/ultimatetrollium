@@ -7,6 +7,8 @@ Carwhisperer: https://trifinite.org/stuff/carwhisperer
 
 wifijammer: https://github.com/hash3liZer/wifijammer
 
+OneShot-Extended: https://github.com/chickendrop89/OneShot-Extended
+
 How to setup?
 ```
 sudo apt update
