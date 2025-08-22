@@ -34,11 +34,11 @@ elif [ "$attack" = "2" ]; then
        	sudo ifconfig ${INTERFACE} down
         sudo iwconfig ${INTERFACE} mode managed # OneShot needs the adapter to be in managed
        	sudo ifconfig ${INTERFACE} up
-	fi
 
 	sudo python .scripts/ose/ose.py -i wlan1 -K -F -w
 
 else
 	echo "Choose 1 or 2"
 	exit 1
+
 fi
