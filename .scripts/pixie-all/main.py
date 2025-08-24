@@ -11,7 +11,27 @@ def scan(interface: str, rescan: bool=True):
 
 
 def main_loop():
-    pass
+    networks = scan(INTERFACE, True)
+
+    print(f"Networks found:\n")
+    for network in networks:
+        print("--------")
+        if network.ssid != "":
+            print(f"{network.ssid}")
+        else:
+            print("(no name)")
+        print(f"{network.bssid}\n")
+
+    for network in networks:
+        if network.ssid != "":
+            ssid = network.ssid
+        else:
+            ssid = "(no name)"
+
+        print(f"Target: {ssid}, {network.bssid}\n")
+
+
+    
 
 
 if __name__ == "__main__":

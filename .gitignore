@@ -11,4 +11,5 @@ nohup.out
 .scripts/ose/src/__pycache__
 .scripts/ose/src/wifi/__pycache__
 .scripts/ose/src/wps/__pycache__
+.scripts/ose/reports
 .scripts/pixie-all/venv
