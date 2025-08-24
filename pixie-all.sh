@@ -21,6 +21,7 @@ cleanup() {
 
 trap cleanup INT TERM
 
+echo "Warning: This script is highly experimental"
 echo "The script can be stopped using ctrl+c"
 
 .scripts/pixie-all/venv/bin/python .scripts/pixie-all/main.py
