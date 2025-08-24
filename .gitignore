@@ -13,3 +13,4 @@ nohup.out
 .scripts/ose/src/wps/__pycache__
 .scripts/ose/reports
 .scripts/pixie-all/venv
+.scripts/pixie-all/reports
