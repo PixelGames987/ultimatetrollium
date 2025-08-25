@@ -4,14 +4,13 @@ import nmcli
 import os
 import subprocess
 import time
-import signal
-import sys
 
 
 INTERFACE = os.getenv("INTERFACE")
 TIMEOUT = 30
 
 def scan(interface: str, rescan: bool=True):
+    print("Scanning...")
     nmcli.device.wifi_rescan(ifname=interface)
     return nmcli.device.wifi(ifname=interface, rescan=rescan)
 
@@ -22,6 +21,8 @@ def main_loop():
         time.sleep(3)
 
         networks_old = scan(INTERFACE, True)
+        networks_new = networks_old # eliminates an error on the first loop
+        last_scan = time.time()
 
         print("Networks found:\n")
         for network in networks_old:
@@ -40,7 +41,9 @@ def main_loop():
 
             print(f"Target: {ssid}, {network.bssid}\n")
 
-            networks_new = scan(INTERFACE, True)
+            if abs(time.time() - last_scan) > 10:
+                networks_new = scan(INTERFACE, True)
+                last_scan = time.time()
 
             if not network in networks_new:
                 print("Network not found, skipping...\n")
