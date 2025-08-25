@@ -3,6 +3,7 @@ carwhisperer/out*
 carwhisperer/carwhisperer
 carwhisperer/output
 carwhisperer/output/*
+reports
 Kismet-*
 nohup.out
 .scripts/wifijammer/.venv
@@ -10,3 +11,6 @@ nohup.out
 .scripts/ose/src/__pycache__
 .scripts/ose/src/wifi/__pycache__
 .scripts/ose/src/wps/__pycache__
+.scripts/ose/reports
+.scripts/pixie-all/venv
+.scripts/pixie-all/reports
