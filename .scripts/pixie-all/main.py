@@ -13,8 +13,10 @@ PATH = os.getenv("absolute_path")
 
 def scan(interface: str, rescan: bool=True):
     print("Scanning...")
-    nmcli.device.wifi_rescan(ifname=interface)
-    return nmcli.device.wifi(ifname=interface, rescan=rescan)
+    while nmcli.device.wifi(ifname=interface) == []:
+        nmcli.device.wifi_rescan(ifname=interface)
+    print("Scan complete\n")
+    return nmcli.device.wifi(ifname=interface)
 
 
 def main_loop():
@@ -47,9 +49,22 @@ def main_loop():
                 networks_new = scan(INTERFACE, True)
                 last_scan = time.time()
 
-            if not network in networks_new:
+            if ssid == "(no name)":
+                print("Hidden network, skipping...\n")
+                continue
+
+            # check if the network is still there
+            network_present = False
+            for n in networks_new:
+                if network.bssid == n.bssid:
+                    network_present = True
+                    break
+
+            if network_present == False:
                 print("Network not found, skipping...\n")
                 continue
+            else:
+                print("Network present\n")
             
             # The interface should always restart before running the attack
             subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
