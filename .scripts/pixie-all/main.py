@@ -9,6 +9,8 @@ import time
 INTERFACE = os.getenv("INTERFACE")
 TIMEOUT = 30
 
+PATH = os.getenv("absolute_path")
+
 def scan(interface: str, rescan: bool=True):
     print("Scanning...")
     nmcli.device.wifi_rescan(ifname=interface)
@@ -54,7 +56,7 @@ def main_loop():
             subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
             subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
 
-            subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
+            subprocess.run(f"timeout {TIMEOUT} sudo {PATH}/.scripts/ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
 
 if __name__ == "__main__":
