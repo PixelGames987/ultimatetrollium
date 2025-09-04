@@ -22,9 +22,10 @@ cd ultimatetrollium
 
 The setup script installs:
 ```
-build-essential, bluez, libbluetooth-dev, sox, nmap, aircrack-ng, network-manager, reaver, bluez, mdk3
+build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 wpa-supplicant iw pixiewps
 carwhisperer
 tailscale (optional)
 kismet
 wifijammer
+OneShot-Extended
 ```
