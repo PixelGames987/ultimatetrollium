@@ -11,7 +11,7 @@ echo -e "\n[*] Full system update...\n"
 sudo apt full-upgrade -y
 
 echo -e "\n[*] Installing WiFi/Bluetooth attack tools and dependencies...\n"
-sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 pixiewps -y
+sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 wpa-supplicant iw pixiewps -y
 
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$(dirname "$0")/carwhisperer"
