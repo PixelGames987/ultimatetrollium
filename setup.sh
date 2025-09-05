@@ -64,7 +64,7 @@ echo -e "\n[*] Setting up pixie-all\n"
 python -m venv .scripts/pixie-all/venv
 .scripts/pixie-all/venv/bin/python -m pip install -r .scripts/pixie-all/requirements.txt
 
-mkdir captures
+mkdir captured
 
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface

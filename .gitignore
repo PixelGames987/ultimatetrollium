@@ -14,4 +14,4 @@ nohup.out
 .scripts/ose/reports
 .scripts/pixie-all/venv
 .scripts/pixie-all/reports
-captures
+captured
