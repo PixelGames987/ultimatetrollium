@@ -5,7 +5,12 @@ if ! command -v tailscale &> /dev/null; then
 	exit 1
 fi
 
-network_name=$(iwconfig "${INTERFACE}">/dev/null | grep ESSID | awk '{print $4}' | cut -d':' -f2)
+mode=$(iwconfig "${INTERFACE}" | grep -o "Mode:Monitor")
+
+if [ "${mode}" = "Mode:Monitor" ]; then
+        echo "Connect to a network first"
+        exit 1
+fi
 
 if iwconfig "${INTERFACE}" | grep -q "ESSID:off/any"; then
         echo "Connect to a network first"
