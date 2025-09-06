@@ -60,6 +60,12 @@ cd -
 
 echo -e "\n[*] wifijammer.py ready to use\n"
 
+echo -e "\n[*] Setting up dhcp-starvation.c\n"
+
+gcc -o .scripts/dhcp-starvation/dhcp-starvation .scripts/dhcp-starvation/dhcp-starvation.c
+
+echo -e "\n[*] dhcp-starvation.c ready to use\n"
+
 echo -e "\n[*] Setting up pixie-all\n"
 python -m venv .scripts/pixie-all/venv
 .scripts/pixie-all/venv/bin/python -m pip install -r .scripts/pixie-all/requirements.txt
