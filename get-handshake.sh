@@ -12,12 +12,12 @@ read -p "bssid?: " bssid
 
 read -p "channel?: " channel
 
-rm -f "$HOME/captured/cap.cap-01.cap"
+rm -f "./captured/cap.cap-01.cap"
 
 sudo iwconfig "$INTERFACE" channel "$channel"
 
 sleep 3
 
-sudo airodump-ng --bssid "$bssid" -c "$channel" -w "$HOME/captured/cap.cap" "$INTERFACE"
+sudo airodump-ng --bssid "$bssid" -c "$channel" -w "./captured/cap.cap" "$INTERFACE"
 
-aircrack-ng "$HOME/captured/cap.cap-01.cap"
+aircrack-ng "./captured/cap.cap-01.cap"

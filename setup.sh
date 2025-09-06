@@ -11,7 +11,7 @@ echo -e "\n[*] Full system update...\n"
 sudo apt full-upgrade -y
 
 echo -e "\n[*] Installing WiFi/Bluetooth attack tools and dependencies...\n"
-sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 -y
+sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 iw pixiewps -y
 
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$(dirname "$0")/carwhisperer"
@@ -63,6 +63,8 @@ echo -e "\n[*] wifijammer.py ready to use\n"
 echo -e "\n[*] Setting up pixie-all\n"
 python -m venv .scripts/pixie-all/venv
 .scripts/pixie-all/venv/bin/python -m pip install -r .scripts/pixie-all/requirements.txt
+
+mkdir captured
 
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
