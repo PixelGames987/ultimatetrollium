@@ -15,8 +15,8 @@ sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng net
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$SCRIPT_DIR/carwhisperer"
 make
+mkdir -p "output"
 cd "$SCRIPT_DIR"
-mkdir -p "$SCRIPT_DIR/carwhisperer/output"
 
 read -p "Do you want to install tailscale? (Y/n): " tailscale
 if [ "${tailscale^^}" != "N" ]; then
