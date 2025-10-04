@@ -2,6 +2,8 @@
 
 # Some parts of this script were vibe coded
 
+echo -e "\nYou need to run this file AFTER running dns-spoof.sh\n"
+
 CONF_DIR="/tmp/hotspot"
 HOSTAPD_CONF="$CONF_DIR/hostapd.conf"
 DNSMASQ_CONF="$CONF_DIR/dnsmasq.conf"
