@@ -1,12 +1,11 @@
 #!/bin/bash
-
 # The setup script for Raspberry Pi OS (Bookworm)
-
 set -e
+
+SCRIPT_DIR="$(dirname "$0")"
 
 echo -e "\n[*] Updating package list...\n"
 sudo apt update
-
 echo -e "\n[*] Full system update...\n"
 sudo apt full-upgrade -y
 
@@ -14,45 +13,74 @@ echo -e "\n[*] Installing WiFi/Bluetooth attack tools and dependencies...\n"
 sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 iw pixiewps nano neovim -y
 
 echo -e "\n[*] Building the carwhisperer exploit...\n"
-cd "$(dirname "$0")/carwhisperer"
+cd "$SCRIPT_DIR/carwhisperer"
 make
-cd ..
-mkdir -p "$(dirname "$0")/carwhisperer/output"
+cd "$SCRIPT_DIR"
+mkdir -p "$SCRIPT_DIR/carwhisperer/output"
 
 read -p "Do you want to install tailscale? (Y/n): " tailscale
 if [ "${tailscale^^}" != "N" ]; then
-	echo -e "\n[*] Installing tailscale...\n"
-	curl -fsSL https://tailscale.com/install.sh | sh
-	sudo systemctl enable tailscaled
-	sudo systemctl start tailscaled
-	echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-	echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.d/99-tailscale.conf
-	sudo sysctl -p /etc/sysctl.d/99-tailscale.conf
-	echo -e "\n[*] Tailscale installed\n"
+    if ! command -v tailscale &> /dev/null; then
+        echo -e "\n[*] Installing tailscale...\n"
+        curl -fsSL https://tailscale.com/install.sh | sh
+        echo -e "\n[*] Tailscale installed\n"
+    else
+        echo -e "\n[*] Tailscale already installed, skipping installation.\n"
+    fi
+    sudo systemctl enable tailscaled --now
+    
+    TAILSCALE_CONF="/etc/sysctl.d/99-tailscale.conf"
+    if ! sudo grep -q 'net.ipv4.ip_forward = 1' "$TAILSCALE_CONF"; then
+        echo 'net.ipv4.ip_forward = 1' | sudo tee -a "$TAILSCALE_CONF"
+    else
+        echo "net.ipv4.ip_forward already configured."
+    fi
+    if ! sudo grep -q 'net.ipv6.conf.all.forwarding = 1' "$TAILSCALE_CONF"; then
+        echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a "$TAILSCALE_CONF"
+    else
+        echo "net.ipv6.conf.all.forwarding already configured."
+    fi
+    sudo sysctl -p "$TAILSCALE_CONF"
 fi
 
 echo -e "\n[*] All dependencies installed and carwhisperer built.\n"
 
 # This makes the connection between the raspberry pi and a phone more stable
 echo -e "\n[*] Disabling wlan0 power management...\n"
-
-cat <<EOF | sudo tee "/etc/NetworkManager/conf.d/disable-wifi-powersave.conf" > /dev/null 
+WIFI_POWERSAVE_CONF="/etc/NetworkManager/conf.d/disable-wifi-powersave.conf"
+if [ ! -f "$WIFI_POWERSAVE_CONF" ] || ! sudo grep -q "wifi.powersave = 2" "$WIFI_POWERSAVE_CONF"; then
+    cat <<EOF | sudo tee "$WIFI_POWERSAVE_CONF" > /dev/null
 [connection]
 wifi.powersave = 2
 EOF
+    echo "WiFi power management configuration applied."
+else
+    echo "WiFi power management already configured."
+fi
 
 echo -e "\n[*] Installing kismet...\n"
-
-wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
-echo "deb https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/kismet.list
-sudo apt update
+# Check if Kismet repository is already added
+if [ ! -f "/etc/apt/sources.list.d/kismet.list" ] || ! sudo grep -q "kismetwireless.net" "/etc/apt/sources.list.d/kismet.list"; then
+    wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
+    echo "deb https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/kismet.list
+    sudo apt update
+    echo "Kismet repository added."
+else
+    echo "Kismet repository already configured."
+    sudo apt update # Still apt update to refresh package lists
+fi
 sudo apt install kismet -y
-sudo systemctl disable kismet
+sudo systemctl disable kismet # Ensure it doesn't start on boot
 
 echo -e "\n[*] Setting up wifijammer.py\n"
-
-python -m venv .scripts/wifijammer/.venv
-.scripts/wifijammer/.venv/bin/python -m pip install scapy==2.4.3
+WIFIJAMMER_VENV_PATH="$SCRIPT_DIR/.scripts/wifijammer/.venv"
+if [ ! -d "$WIFIJAMMER_VENV_PATH" ]; then
+    python -m venv "$WIFIJAMMER_VENV_PATH"
+    echo "wifijammer.py virtual environment created."
+else
+    echo "wifijammer.py virtual environment already exists."
+fi
+"$WIFIJAMMER_VENV_PATH/bin/python" -m pip install scapy==2.4.3
 
 cd /usr/lib/aarch64-linux-gnu
 sudo ln -s -f libc.a liblibc.a
@@ -61,31 +89,62 @@ cd -
 echo -e "\n[*] wifijammer.py ready to use\n"
 
 echo -e "\n[*] Setting up dhcp-starvation.c\n"
-
-gcc -o .scripts/dhcp-starvation/dhcp-starvation .scripts/dhcp-starvation/dhcp-starvation.c
-
+gcc -o "$SCRIPT_DIR/.scripts/dhcp-starvation/dhcp-starvation" "$SCRIPT_DIR/.scripts/dhcp-starvation/dhcp-starvation.c"
 echo -e "\n[*] dhcp-starvation.c ready to use\n"
 
 echo -e "\n[*] Setting up pixie-all\n"
-python -m venv .scripts/pixie-all/venv
-.scripts/pixie-all/venv/bin/python -m pip install -r .scripts/pixie-all/requirements.txt
+PIXIEALL_VENV_PATH="$SCRIPT_DIR/.scripts/pixie-all/venv"
+if [ ! -d "$PIXIEALL_VENV_PATH" ]; then
+    python -m venv "$PIXIEALL_VENV_PATH"
+    echo "pixie-all virtual environment created."
+else
+    echo "pixie-all virtual environment already exists."
+fi
+"$PIXIEALL_VENV_PATH/bin/python" -m pip install -r "$SCRIPT_DIR/.scripts/pixie-all/requirements.txt" 
 
-mkdir captured
+mkdir -p captured
 
 read -p "Which wlan device will you be using? (eg. wlan1): " interface
 read -p "Which hci device will you be using? (eg. hci0): " bt_interface
 sudo iwconfig
 read -p "Copy and paste your hotspot's mac address/bssid (to not be targeted by the wifi deauther): " mac
 
-echo -e "export INTERFACE=${interface}" >> ~/.bashrc
-echo -e "export INTERFACE_BT=${bt_interface}" >> ~/.bashrc
-echo -e "export MAC=\"${mac}\"" >> ~/.bashrc
+add_or_update_bashrc_export() {
+    local var_name="$1"
+    local var_value="$2"
+    local line_to_add="export ${var_name}=${var_value}"
+    local bashrc_file="${HOME}/.bashrc"
+
+    if grep -q "export ${var_name}=" "$bashrc_file"; then
+        # If the variable exists, update its value
+        sed -i "/^export ${var_name}=/c\\${line_to_add}" "$bashrc_file"
+        echo "Updated ${var_name} in ~/.bashrc"
+    else
+        # If the variable doesn't exist, add it
+        echo "$line_to_add" >> "$bashrc_file"
+        echo "Added ${var_name} to ~/.bashrc"
+    fi
+}
+
+add_or_update_bashrc_export INTERFACE "${interface}"
+add_or_update_bashrc_export INTERFACE_BT "${bt_interface}"
+add_or_update_bashrc_export MAC "\"${mac}\""
 
 source ~/.bashrc
 
-sudo sh -c "echo \"source=${INTERFACE}\" >> /etc/kismet/kismet.conf"
+# TODO: add gpsd configuration
+KISMET_CONF="/etc/kismet/kismet.conf"
+KISMET_SOURCE_LINE="source=${interface}"
+if sudo grep -q "^source=" "$KISMET_CONF"; then
+    # If any source line exists, update it to the new interface
+    sudo sed -i "/^source=/c\\${KISMET_SOURCE_LINE}" "$KISMET_CONF"
+    echo "Updated Kismet source interface to ${interface}."
+else
+    # If no source line exists, add it
+    sudo sh -c "echo \"${KISMET_SOURCE_LINE}\" >> \"$KISMET_CONF\""
+    echo "Added Kismet source interface ${interface}."
+fi
 
 echo -e "\n[*] Restarting NetworkManager... This will temporarily disconnect the raspberry pi from your hotspot\n"
 sudo systemctl restart NetworkManager
-
 echo "[*] Setup completed, scripts ready for use."
