@@ -2,7 +2,9 @@
 # The setup script for Raspberry Pi OS (Bookworm)
 set -e
 
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR="$(pwd)"
+
+echo $SCRIPT_DIR
 
 echo -e "\n[*] Updating package list...\n"
 sudo apt update
@@ -59,18 +61,33 @@ else
 fi
 
 echo -e "\n[*] Installing kismet...\n"
-# Check if Kismet repository is already added
-if [ ! -f "/etc/apt/sources.list.d/kismet.list" ] || ! sudo grep -q "kismetwireless.net" "/etc/apt/sources.list.d/kismet.list"; then
-    wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
-    echo "deb https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/kismet.list
-    sudo apt update
-    echo "Kismet repository added."
-else
+
+KEYRING_PATH="/etc/apt/keyrings/kismet-archive-keyring.gpg"
+SOURCES_LIST_PATH="/etc/apt/sources.list.d/kismet.list"
+
+if [ -f "$SOURCES_LIST_PATH" ] && sudo grep -q "kismetwireless.net" "$SOURCES_LIST_PATH"; then
     echo "Kismet repository already configured."
-    sudo apt update # Still apt update to refresh package lists
+    sudo apt update
+else
+    echo "Adding Kismet repository..."
+    sudo mkdir -p /etc/apt/keyrings
+
+    wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo gpg --dearmor -o "$KEYRING_PATH"
+    
+    echo "deb [signed-by=$KEYRING_PATH] https://www.kismetwireless.net/repos/apt/release/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee "$SOURCES_LIST_PATH" > /dev/null
+
+    sudo apt update
+    echo "Kismet repository added successfully."
 fi
+
+echo -e "\n[*] Installing Kismet package...\n"
 sudo apt install kismet -y
-sudo systemctl disable kismet # Ensure it doesn't start on boot
+
+echo -e "\n[*] Disabling Kismet service from starting on boot...\n"
+sudo systemctl disable kismet
+
+echo -e "\n[*] Kismet installation complete."
+
 
 echo -e "\n[*] Setting up wifijammer.py\n"
 WIFIJAMMER_VENV_PATH="$SCRIPT_DIR/.scripts/wifijammer/.venv"
@@ -84,12 +101,12 @@ fi
 
 cd /usr/lib/aarch64-linux-gnu
 sudo ln -s -f libc.a liblibc.a
-cd -
+cd $SCRIPT_DIR
 
 echo -e "\n[*] wifijammer.py ready to use\n"
 
 echo -e "\n[*] Setting up dhcp-starvation.c\n"
-gcc -o "$SCRIPT_DIR/.scripts/dhcp-starvation/dhcp-starvation" "$SCRIPT_DIR/.scripts/dhcp-starvation/dhcp-starvation.c"
+gcc -o ".scripts/dhcp-starvation/dhcp-starvation" ".scripts/dhcp-starvation/dhcp-starvation.c"
 echo -e "\n[*] dhcp-starvation.c ready to use\n"
 
 echo -e "\n[*] Setting up pixie-all\n"
