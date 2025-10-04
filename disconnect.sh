@@ -8,7 +8,7 @@ if [ "${mode}" = "Mode:Monitor" ]; then
         sudo ifconfig ${INTERFACE} up
 fi
 
-read -p "ssid?: " connection
+connection=$(nmcli -t -f GENERAL.CONNECTION device show $INTERFACE | cut -d: -f2-)
 
 sudo nmcli con down "$connection"
 
