@@ -1,5 +1,5 @@
 #!/bin/bash
-# The setup script for Raspberry Pi OS (Bookworm)
+# The setup script for Raspberry Pi OS (Trixie)
 set -e
 
 SCRIPT_DIR="$(pwd)"
@@ -97,7 +97,7 @@ if [ ! -d "$WIFIJAMMER_VENV_PATH" ]; then
 else
     echo "wifijammer.py virtual environment already exists."
 fi
-"$WIFIJAMMER_VENV_PATH/bin/python" -m pip install scapy==2.4.3
+"$WIFIJAMMER_VENV_PATH/bin/python" -m pip install scapy
 
 cd /usr/lib/aarch64-linux-gnu
 sudo ln -s -f libc.a liblibc.a
