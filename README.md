@@ -20,12 +20,24 @@ cd ultimatetrollium
 ./setup.sh
 ```
 
+Websites for dns spoofing can easily be created using an AI like ChatGPT or Gemini and running it on port 80.
+
+
 The setup script installs:
 ```
-build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 wpa-supplicant iw pixiewps
+build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk3 wpa-supplicant iw pixiewps, neovim, hostapd, dnsmasq
 carwhisperer
 tailscale (optional)
 kismet
 wifijammer
 OneShot-Extended
 ```
+
+
+TODO list:
+- Fix kismet
+- add applejuice 
+- add a probe scanner
+- add target client deauth
+- add evil portal functionality
+- fix beacon spam
