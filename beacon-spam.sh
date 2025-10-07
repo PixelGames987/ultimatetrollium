@@ -1,24 +1,47 @@
 #!/bin/bash
 
-mode=$(iwconfig "${INTERFACE}" | grep -o "Mode:Managed")
+cleanup() {
+    echo -e "\n\nStopping all mdk4 processes"
+    sudo killall mdk4 >/dev/null 2>&1
+    rm -f "/tmp/aps_list.txt"
+    exit 0
+}
 
+trap cleanup INT
+
+mode=$(iwconfig "${INTERFACE}" | grep -o "Mode:Managed")
 if [ "${mode}" = "Mode:Managed" ]; then
         sudo ifconfig ${INTERFACE} down
         sudo iwconfig ${INTERFACE} mode monitor
         sudo ifconfig ${INTERFACE} up
 fi
-
-read -p "ssid?: " ssid
+read -p "ssid?: " ssid_prefix
 read -p "count?: " count
+read -p "enable mac hopping? (Y/n): " hop_macs
 
-AP_FILE="/tmp/aps.txt"
+if [[ "$hop_macs" =~ ^[Yy]$ ]]; then
+    for i in $(seq 1 "$count"); do
+      ssid="${ssid_prefix}${i}"
+      # Note: The original script used `-c` for MAC, but the correct mdk4 flag is `-m`.
+      random_mac=$(printf '02:%02x:%02x:%02x:%02x:%02x' $[RANDOM%256] $[RANDOM%256] $[RANDOM%256] $[RANDOM%256] $[RANDOM%256])
+      echo "Advertising SSID: '$ssid' with MAC: $random_mac"
+      # Launch mdk4 in the background
+      sudo mdk4 "$INTERFACE" b -n "$ssid" -m "$random_mac" &
+      sleep 0.1 # Small delay so the driver can handle it
+    done
+    echo "All workers running. Press Ctrl+C to stop."
+    # Wait for any background process to finish, or for a signal like Ctrl+C
+    wait
+else
+    AP_FILE="/tmp/aps_list.txt"
+    echo "Creating SSID list"
+    rm -f "$AP_FILE"
+    for i in $(seq 1 "$count"); do
+      echo "${ssid_prefix}${i}" >> "$AP_FILE"
+    done
+    echo "Press ctrl+c to stop"
+    sudo mdk4 "$INTERFACE" b -f "$AP_FILE"
+fi
 
-rm -f "$AP_FILE"
-
-echo "Creating list of APs..."
-for i in $(seq 1 "$count"); do
-  echo "$ssid$i" >> "$AP_FILE"
-	
-done
-
-sudo mdk4 "$INTERFACE" b -f "$AP_FILE" -h
+# Run cleanup at the end in case mdk4 finishes on its own
+cleanup
