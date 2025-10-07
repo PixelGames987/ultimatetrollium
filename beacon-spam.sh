@@ -15,6 +15,9 @@ if [ "${mode}" = "Mode:Managed" ]; then
         sudo iwconfig ${INTERFACE} mode monitor
         sudo ifconfig ${INTERFACE} up
 fi
+
+echo -e "\nWarning: use this script with caution! The raspberry pi can overheat while managing this many processes without proper cooling.\n"
+
 read -p "ssid?: " ssid_prefix
 read -p "count?: " count
 read -p "enable mac hopping? (Y/n): " hop_macs
@@ -22,12 +25,11 @@ read -p "enable mac hopping? (Y/n): " hop_macs
 if [[ "$hop_macs" =~ ^[Yy]$ ]]; then
     for i in $(seq 1 "$count"); do
       ssid="${ssid_prefix}${i}"
-      # Note: The original script used `-c` for MAC, but the correct mdk4 flag is `-m`.
       random_mac=$(printf '02:%02x:%02x:%02x:%02x:%02x' $[RANDOM%256] $[RANDOM%256] $[RANDOM%256] $[RANDOM%256] $[RANDOM%256])
       echo "Advertising SSID: '$ssid' with MAC: $random_mac"
       # Launch mdk4 in the background
       sudo mdk4 "$INTERFACE" b -n "$ssid" -m "$random_mac" &
-      sleep 0.1 # Small delay so the driver can handle it
+      sleep 0.1 # Small delay so the driver can handle it, 0.1s is the bare minimum it csn handle
     done
     echo "All workers running. Press Ctrl+C to stop."
     # Wait for any background process to finish, or for a signal like Ctrl+C
