@@ -12,7 +12,7 @@ echo -e "\n[*] Full system update...\n"
 sudo apt full-upgrade -y
 
 echo -e "\n[*] Installing WiFi/Bluetooth attack tools and dependencies...\n"
-sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk4 iw pixiewps nano neovim hostapd dnsmasq -y
+sudo apt install build-essential bluez libbluetooth-dev sox nmap aircrack-ng network-manager reaver bluez mdk4 iw pixiewps nano neovim hostapd dnsmasq python3-dev libnl-route-3-dev libnl-genl-3-dev libpcap-dev libev-dev libnl-3-dev -y
 
 echo -e "\n[*] Building the carwhisperer exploit...\n"
 cd "$SCRIPT_DIR/carwhisperer"
@@ -118,6 +118,16 @@ else
     echo "pixie-all virtual environment already exists."
 fi
 "$PIXIEALL_VENV_PATH/bin/python" -m pip install -r "$SCRIPT_DIR/.scripts/pixie-all/requirements.txt" 
+
+
+APPLEJUICE_PATH="$SCRIPT_DIR/.scripts/applejuice"
+
+echo -e "\n[*] Setting up AppleJuice...\n"
+python -m venv "$APPLEJUICE_PATH"/.venv
+"$APPLEJUICE_PATH"/.venv/bin/python -m pip install git+https://github.com/pybluez/pybluez.git#egg=pybluez
+"$APPLEJUICE_PATH"/.venv/bin/python -m pip install -r "$APPLEJUICE_PATH"/requirements.txt
+
+echo -e "\n[*] AppleJuice set up.\n"
 
 mkdir -p captured
 
