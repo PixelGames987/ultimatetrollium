@@ -21,4 +21,4 @@ for i in $(seq 1 "$count"); do
 	
 done
 
-sudo mdk3 "$INTERFACE" b -f "$AP_FILE" -h
+sudo mdk4 "$INTERFACE" b -f "$AP_FILE" -h
