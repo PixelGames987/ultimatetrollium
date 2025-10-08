@@ -40,3 +40,5 @@ TODO list:
 - add a probe scanner
 - add target client deauth
 - add evil portal functionality
+- migrate to airmon-ng
+- add a way to connect to bluetooth devices
