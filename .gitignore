@@ -16,4 +16,5 @@ nohup.out
 .scripts/pixie-all/reports
 .scripts/dhcp-starvation/dhcp-starvation
 .scripts/applejuice/.venv
+.scripts/applejuice/utils/__pycache__
 captured
