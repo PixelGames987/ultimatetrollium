@@ -9,6 +9,8 @@ wifijammer: https://github.com/hash3liZer/wifijammer
 
 OneShot-Extended: https://github.com/chickendrop89/OneShot-Extended
 
+AppleJuice: https://github.com/ECTO-1A/AppleJuice
+
 How to setup?
 ```
 sudo apt update
@@ -36,7 +38,6 @@ OneShot-Extended
 
 TODO list:
 - Fix kismet
-- add applejuice 
 - add a probe scanner
 - add target client deauth
 - add evil portal functionality
