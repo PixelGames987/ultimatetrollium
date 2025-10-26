@@ -1,5 +1,12 @@
 #!/bin/bash
 
+mode=$(iwconfig "${INTERFACE}" | grep -o "Mode:Managed")
+if [ "${mode}" = "Mode:Managed" ]; then
+        sudo ifconfig ${INTERFACE} down
+        sudo iwconfig ${INTERFACE} mode monitor
+        sudo ifconfig ${INTERFACE} up
+fi
+
 read -p "Client MAC filter? (leave empty to sniff all requests): " mac_filter
 
 if [ -z $mac_filter ]; then
